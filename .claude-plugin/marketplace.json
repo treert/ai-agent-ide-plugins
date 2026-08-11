@@ -1,0 +1,11 @@
+{
+  "name": "my-plugins",
+  "description": "个人插件市场",
+  "plugins": [
+    {
+      "name": "my-superpowers",
+      "source": "./my-superpowers",
+      "description": "个人精简版 superpowers 技能集"
+    }
+  ]
+}

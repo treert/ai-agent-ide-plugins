@@ -1,0 +1,7 @@
+{
+  "name": "my-superpowers",
+  "description": "个人精简版 superpowers 技能集：brainstorming + TDD",
+  "version": "1.0.0",
+  "category": "开发工具",
+  "keywords": ["skills", "tdd", "brainstorming", "superpowers"]
+}
