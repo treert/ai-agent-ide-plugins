@@ -24,8 +24,10 @@
 本插件不做全局引导注入。在需要使用的项目里，于 `AGENTS.md` 或 `CLAUDE.md` 中添加技能触发说明，例如：
 
 ```markdown
-## 技能使用
-本项目使用 my-superpowers 插件的技能。开始任何任务前：
+## 使用 my-superpowers（特别重要）
+
+会话开始时先调用 using-superpowers 技能，它会指导你在合适时机使用其他技能。
+
 - 构建/改造功能前 → 先用 brainstorming 技能
 - 写实现代码前 → 先用 test-driven-development 技能
 ```
