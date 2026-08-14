@@ -3,10 +3,6 @@ name: setup-my-superpowers
 description: INTERNAL — 手动调用专用，仅由 setup-skills command 主动触发，不响应任何用户消息被动触发。
 ---
 
-> ⚠️ **本 skill 为手动调用专用，不要因用户提到 setup / 配置 / 注入 / code-review 等词被动触发。**
-> 仅当 `commands/setup-skills.md` 显式调用时才执行。
-> 被动触发场景应改由用户主动运行 `@command://my-superpowers:setup-skills`。
-
 # Setup my-superpowers in Target Project
 
 在目标项目注入 my-superpowers 技能触发说明，并生成项目级 code-review 配置（subagent + rule）。
