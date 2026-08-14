@@ -55,9 +55,13 @@
 
 ```
 my-superpowers/templates/code-review/
-├── agent.md   ← 生成目标项目 .codebuddy/agents/code-reviewer.md 的源模板
-└── rule.md    ← 生成目标项目 .codebuddy/rules/requesting-code-review.md 的源模板
+├── agent.md   ← 源模板（作文档参考）
+└── rule.md    ← 源模板（作文档参考）
 ```
+
+> **2026-08-13 实测修正**：实测发现 AI 执行 `@command://my-superpowers:setup-skills` 时，CodeBuddy 不暴露 command 文件的文件系统路径，AI 不知道 my-superpowers 仓库在哪，在 `$HOME\.codebuddy\plugins` 等位置乱搜模板文件导致失败。
+>
+> **修复方案**：把两个模板内容**直接内联**到 `commands/setup-skills.md` 末尾（【模板 A】和【模板 B】），AI 执行时直接从 command 内容获取模板，不再依赖文件系统搜索。`templates/code-review/` 目录保留作文档参考，修改模板时需同步更新两处。
 
 两个模板都带 placeholder（`{{PROJECT_NAME}}` / `{{TECH_STACK}}` / `{{BUILD_COMMANDS}}` 等），由 `commands/setup-skills.md` 第 4 步在执行时填充。
 
