@@ -1,9 +1,3 @@
-## 用法
-
-```
-@command://my-superpowers:setup-skills
-```
-
 ## 作用
 
 在当前项目注入 my-superpowers 技能触发说明到 `AGENTS.md`，并生成项目级 code-review 配置（subagent + rule）。

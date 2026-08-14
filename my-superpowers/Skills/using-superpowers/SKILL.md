@@ -1,7 +1,11 @@
 ---
 name: using-superpowers
-description: Use when starting any conversation - establishes how to find and use skills, requiring skill invocation before ANY response including clarifying questions
+description: INTERNAL — 会话启动专用，仅由项目 AGENTS.md 中 '会话开始时先调用 using-superpowers' 指令主动触发，不响应任何用户消息被动触发。
 ---
+
+> ⚠️ **本 skill 为会话启动专用，不要因用户提到 skill / 技能 / superpowers / 引导等词被动触发。**
+> 仅当 AGENTS.md 注入的"会话开始时先调用 using-superpowers"指令触发，或用户明确要求"调用 using-superpowers 技能"时才执行。
+> 用户日常消息（提问、改代码、debug 等）不触发本 skill，应直接进入对应的工作流 skill（brainstorming / systematic-debugging 等）。
 
 <EXTREMELY-IMPORTANT>
 If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.
