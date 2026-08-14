@@ -59,6 +59,34 @@ without repeating it.
 
 **Launching the server by platform:**
 
+**CodeBuddy (Windows / PowerShell):**
+The `start-server.sh` script is bash-only and won't run in PowerShell. Start the server directly with node in a detached background process — `execute_command` runs synchronously and reaps the process when it returns, so you MUST use `Start-Process` (or equivalent) to keep the server alive across conversation turns:
+
+```powershell
+$env:BRAINSTORM_DIR = "<project>/.superpowers/brainstorm/<session-id>"
+$env:BRAINSTORM_PORT = "52341"
+$env:BRAINSTORM_HOST = "127.0.0.1"
+$env:BRAINSTORM_TOKEN = "<random-32+hex-chars>"
+New-Item -ItemType Directory -Force -Path "$env:BRAINSTORM_DIR\content","$env:BRAINSTORM_DIR\state" | Out-Null
+Start-Process -FilePath "node" `
+  -ArgumentList "server.cjs" `
+  -WorkingDirectory "<skill-dir>/Skills/brainstorming/scripts" `
+  -WindowStyle Hidden -PassThru
+```
+
+Then give the user the URL: `http://localhost:52341/?key=<token>`. The user opens it in an **external browser** (Chrome/Edge/Firefox) — the IDE's built-in browser preview works for viewing but may not record click events back to `$STATE_DIR/events` due to WebSocket restrictions.
+
+After starting, verify the server is alive before pushing screens:
+```powershell
+Invoke-WebRequest -Uri "http://localhost:52341/?key=<token>" -UseBasicParsing -TimeoutSec 5
+```
+
+To stop the server later:
+```powershell
+Get-Process -Name node | Where-Object { $_.Path -match "server.cjs" } | Stop-Process -Force
+```
+Or track the PID returned by `Start-Process -PassThru` and `Stop-Process -Id <pid> -Force`.
+
 **Claude Code:**
 ```bash
 # Default mode works — the script backgrounds the server itself.
