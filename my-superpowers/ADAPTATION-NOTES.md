@@ -89,6 +89,7 @@ my-superpowers/Skills/setup-my-superpowers/
 - **receiving-code-review 仍是 skill**：处理反馈是主 agent 职责，不 dispatch subagent
 - **项目背景由 setup 时 AI 主动观察填充**：不询问用户，从 manifest 和目录树推断；观察不到则留 placeholder 注释让用户后填
 - **如已有同名文件不覆盖**：保护用户已定制的版本，需重新生成时手动删除
+- **`setup-my-superpowers` 为手动调用专用 skill**：description 不用 "Use when..." 触发句式，改用 "INTERNAL — 手动调用专用" 前缀 + 正文显式标注"不响应任何用户消息被动触发"。避免用户提"setup"/"配置"/"code-review"等词时被误触发——该 skill 是一次性项目初始化动作，只应通过 `@command://my-superpowers:setup-skills` 主动调用
 
 ### 已删除的孤立 reviewer 文件
 
