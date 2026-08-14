@@ -4,7 +4,7 @@
 
 ## 包含
 
-### Skills（10 个）
+### Skills（11 个）
 
 - **using-superpowers** — 引导层，教 agent 任何动作前先查技能
 - **brainstorming** — 写代码前先把想法变成设计
@@ -16,17 +16,18 @@
 - **verification-before-completion** — 完成前必须自我验证
 - **receiving-code-review** — 收到 review 反馈后的处理规范
 - **writing-skills** — 编写新的 skill 文档
+- **setup-my-superpowers** — 在目标项目注入触发说明 + 生成 code-review 配置（由 `setup-skills` command 调用）
 
-### 模板（1 套，位于 `templates/code-review/`）
+### 模板（1 套，位于 `Skills/setup-my-superpowers/templates/code-review/`）
 
 - **agent.md** — 生成目标项目 `.codebuddy/agents/code-reviewer.md` 的源模板（subagent 定义）
 - **rule.md** — 生成目标项目 `.codebuddy/rules/requesting-code-review.md` 的源模板（触发 rule）
 
-由 `commands/setup-skills.md` 在目标项目执行时填充 placeholder 后落地，详见 `ADAPTATION-NOTES.md` 的"Code Review 适配方案"。
+由 `setup-my-superpowers` skill 在执行时读取并填充 placeholder 后落地，详见 `ADAPTATION-NOTES.md` 的"Code Review 适配方案"。
 
 ### Commands
 
-- **setup-skills** — 在目标项目注入 my-superpowers 触发说明到 `AGENTS.md`，并生成项目级 code-review subagent + rule
+- **setup-skills** — 调用 `setup-my-superpowers` skill，在目标项目注入 my-superpowers 触发说明到 `AGENTS.md`，并生成项目级 code-review subagent + rule
 
 ## 安装
 
@@ -34,7 +35,7 @@
 
 ## 与原版 superpowers 的区别
 
-- 原版 14 个 skill，本仓库取 10 个 skill + 1 套 code-review 模板，排除 3 个
+- 原版 14 个 skill，本仓库取 11 个 skill（含 `setup-my-superpowers` 这个自创 skill）+ 1 套 code-review 模板（来自原版 `requesting-code-review`），排除 3 个
 - 排除原因：
   - `subagent-driven-development` / `dispatching-parallel-agents` — 强依赖 `general-purpose` subagent，CodeBuddy 无此 subagent
   - `using-git-worktrees` — 用户决定不需要

@@ -8,9 +8,9 @@
 - **源仓库目录**：`F:\MyGit\superpowers\skills\`
 - **目标目录**：`F:\MyGit\ai-agent-ide-plugins\my-superpowers\Skills\`
 
-## 当前已包含的 Skills（10 个）
+## 当前已包含的 Skills（11 个）
 
-> 注：`requesting-code-review` 已从 Skills 目录迁出，转为 `templates/code-review/` 下的模板，由 `setup-skills` 命令在目标项目生成项目级 subagent + rule。详见下文"Code Review 适配方案"。
+> 注：`requesting-code-review` 已从 Skills 目录迁出，转为 `Skills/setup-my-superpowers/templates/code-review/` 下的模板，由 `setup-skills` command 调用 `setup-my-superpowers` skill 在目标项目生成项目级 subagent + rule。详见下文"Code Review 适配方案"。
 
 | Skill | 来源 | subagent 依赖 | 状态 |
 |-------|------|--------------|------|
@@ -24,6 +24,7 @@
 | `writing-plans` | 原版 | 无 | ✅ 可直接用 |
 | `executing-plans` | 原版 | 无 | ✅ 可直接用 |
 | `writing-skills` | 原版 | 无 | ✅ 可直接用 |
+| `setup-my-superpowers` | 自创 | 无 | ✅ 由 `setup-skills` command 调用 |
 
 ## 明确不包含的 Skills（3 个）
 
@@ -54,16 +55,22 @@
 ### 模板文件位置
 
 ```
-my-superpowers/templates/code-review/
-├── agent.md   ← 源模板（作文档参考）
-└── rule.md    ← 源模板（作文档参考）
+my-superpowers/Skills/setup-my-superpowers/
+├── SKILL.md                      ← setup 执行流程定义
+└── templates/code-review/
+    ├── agent.md                  ← 生成 .codebuddy/agents/code-reviewer.md 的源模板
+    └── rule.md                   ← 生成 .codebuddy/rules/requesting-code-review.md 的源模板
 ```
 
-> **2026-08-13 实测修正**：实测发现 AI 执行 `@command://my-superpowers:setup-skills` 时，CodeBuddy 不暴露 command 文件的文件系统路径，AI 不知道 my-superpowers 仓库在哪，在 `$HOME\.codebuddy\plugins` 等位置乱搜模板文件导致失败。
+> **架构演进历史**：
 >
-> **修复方案**：把两个模板内容**直接内联**到 `commands/setup-skills.md` 末尾（【模板 A】和【模板 B】），AI 执行时直接从 command 内容获取模板，不再依赖文件系统搜索。`templates/code-review/` 目录保留作文档参考，修改模板时需同步更新两处。
+> 1. **初始方案**：`commands/setup-skills.md` 用相对路径 `templates/code-review/agent.md` 引用模板。实测失败——CodeBuddy 不暴露 command 文件路径，AI 在 `$HOME\.codebuddy\plugins` 乱搜。
+> 2. **内联方案（2026-08-13）**：把模板内容内联到 `commands/setup-skills.md` 末尾。实测可用，但模板内容庞大导致 command 文件难维护，且模板与 command 强耦合。
+> 3. **skill 方案（2026-08-14，当前）**：新建 `Skills/setup-my-superpowers/SKILL.md`，模板放在该 skill 目录下 `templates/code-review/`。`commands/setup-skills.md` 只调用 skill。skill 加载时暴露其 base directory 路径，AI 可用相对路径直接 `read_file` 模板文件。
+>
+> **优势**：模板回归独立文件管理；command 文件保持简洁；skill 可被其他场景复用。
 
-两个模板都带 placeholder（`{{PROJECT_NAME}}` / `{{TECH_STACK}}` / `{{BUILD_COMMANDS}}` 等），由 `commands/setup-skills.md` 第 4 步在执行时填充。
+两个模板都带 placeholder（`{{PROJECT_NAME}}` / `{{TECH_STACK}}` / `{{BUILD_COMMANDS}}` 等），由 `Skills/setup-my-superpowers/SKILL.md` 的 Step 4-5 在执行时填充。
 
 ### 生成后的目标项目结构
 
@@ -175,7 +182,7 @@ executing-plans/SKILL.md
 
 - [x] 适配 `requesting-code-review`（已完成：转为模板生成器模式，详见"Code Review 适配方案"）
 - [x] 更新 `commands/setup-skills.md`，注入新的技能触发说明 + 生成 code-review 配置（第 4 步已加）
-- [x] 更新 `README.md`（已改为 10 个 skill + 1 套 code-review 模板）
+- [x] 更新 `README.md`（已改为 11 个 skill + 1 套 code-review 模板）
 - [x] 检查 `writing-plans` / `brainstorming` 的 subagent 依赖（已完成）
   - 发现并删除 2 个孤立文件：`writing-plans/plan-document-reviewer-prompt.md` 和 `brainstorming/spec-document-reviewer-prompt.md`（均含 `Subagent (general-purpose):` 语法，且无任何 SKILL.md 引用，原版用主 agent 自执行的 Self-Review 替代）
   - 清理 `writing-plans/SKILL.md` 中对已排除 skill 的引用：删除 `using-git-worktrees` context 行、`subagent-driven-development` 选项与路径
@@ -184,13 +191,15 @@ executing-plans/SKILL.md
   - 检查结论：该 skill 的 worktree 逻辑是**检测 + 兼容**（Detect Environment + Cleanup），不是**创建** worktree（后者在已排除的 `using-git-worktrees` 里）
   - 即使 CodeBuddy 不主动创建 worktree，用户可能手动用 `git worktree` 或 CodeBuddy 内部用 worktree 隔离——这 skill 能正确处理两种场景，保留更安全
   - 唯一改动：Step 6 注释里的 `Superpowers` → `my-superpowers`
-- [ ] 在某个真实目标项目实测 `setup-skills` 第 4 步生成的两个文件是否工作正常
+- [x] 在真实目标项目实测 `setup-skills` 生成的两个文件是否工作正常（已完成）
+  - 2026-08-13：内联方案实测可用（AI 能拿到模板内容生成两个文件）
+  - 2026-08-14：重构为 skill 方案——`commands/setup-skills.md` 调用 `setup-my-superpowers` skill，模板回归独立文件位于 `Skills/setup-my-superpowers/templates/code-review/`，待再次实测确认 skill 能正确读取模板文件
 - [x] 检查 `writing-skills/render-graphs.js` 第 96-97 行示例命令（已完成）
   - 示例参数 `../subagent-driven-development` → 改为 `../brainstorming`（本仓库实际存在且有 `.dot` 块的 skill）
 
 ## 原版 superpowers 参考
 
 - 源仓库：`f:\MyGit\superpowers`
-- 原版共 14 个 skill，本仓库取 10 个 skill + 1 套 code-review 模板（来自原版 `requesting-code-review`），排除 3 个
+- 原版共 14 个 skill，本仓库取 10 个原版 skill + 1 个自创 skill（`setup-my-superpowers`）+ 1 套 code-review 模板（来自原版 `requesting-code-review`），排除 3 个
 - 原版所有 prompt 模板中的 `Subagent (general-purpose):` 语法是 Claude Code 专属，CodeBuddy 需用 `Task(subagent_name="code-explorer")` 或项目级自定义 subagent 替代
 - 本仓库的 code-review 适配走"项目级 subagent + rule"路线（参考 `F:\MyGit\ai-mylua-lsp\.codebuddy\` 的实践）
