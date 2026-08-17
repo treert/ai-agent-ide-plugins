@@ -9,8 +9,9 @@
 1. 在 `AGENTS.md`（或 `CLAUDE.md`）注入技能触发说明
 2. 观察目标项目结构，推断技术栈和构建命令
 3. 读取 skill 目录下的 `templates/code-review/agent.md` 和 `rule.md` 模板
-4. 在目标项目生成 `.codebuddy/agents/code-reviewer.md`（subagent 定义）
-5. 在目标项目生成 `.codebuddy/rules/requesting-code-review.md`（触发 rule，默认 `enabled: false`）
+4. 检查目标项目是否已存在同名文件，存在则跳过生成（幂等保护）
+5. 在目标项目生成 `.codebuddy/agents/code-reviewer.md`（subagent 定义）
+6. 在目标项目生成 `.codebuddy/rules/requesting-code-review.md`（触发 rule，默认 `enabled: false`）
 
 详细执行步骤见 `Skills/setup-my-superpowers/SKILL.md`。
 

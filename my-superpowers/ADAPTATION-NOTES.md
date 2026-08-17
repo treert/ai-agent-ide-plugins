@@ -182,7 +182,7 @@ executing-plans/SKILL.md
 ## 待办事项
 
 - [x] 适配 `requesting-code-review`（已完成：转为模板生成器模式，详见"Code Review 适配方案"）
-- [x] 更新 `commands/setup-skills.md`，注入新的技能触发说明 + 生成 code-review 配置（第 4 步已加）
+- [x] 更新 `commands/setup-skills.md`，注入新的技能触发说明 + 生成 code-review 配置（已加 Idempotency Check + 生成两文件的步骤）
 - [x] 更新 `README.md`（已改为 11 个 skill + 1 套 code-review 模板）
 - [x] 检查 `writing-plans` / `brainstorming` 的 subagent 依赖（已完成）
   - 发现并删除 2 个孤立文件：`writing-plans/plan-document-reviewer-prompt.md` 和 `brainstorming/spec-document-reviewer-prompt.md`（均含 `Subagent (general-purpose):` 语法，且无任何 SKILL.md 引用，原版用主 agent 自执行的 Self-Review 替代）

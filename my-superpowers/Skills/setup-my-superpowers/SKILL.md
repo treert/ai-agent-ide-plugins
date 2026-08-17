@@ -47,7 +47,14 @@ description: INTERNAL — 手动调用专用，仅由 setup-skills command 主�
 - `templates/code-review/agent.md` — code-reviewer subagent 定义模板
 - `templates/code-review/rule.md` — code-review 触发 rule 模板
 
-## Step 4: Generate code-reviewer subagent
+## Step 4: Idempotency Check
+
+生成前先检查目标项目 `.codebuddy/agents/code-reviewer.md` 和 `.codebuddy/rules/requesting-code-review.md` 是否已存在：
+
+- **存在** → 跳过 Step 5-6，直接告知用户"已存在，未覆盖，如需重新生成请先手动删除"
+- **不存在** → 继续 Step 5-6
+
+## Step 5: Generate code-reviewer subagent
 
 在目标项目创建 `.codebuddy/agents/code-reviewer.md`：
 
@@ -60,7 +67,7 @@ description: INTERNAL — 手动调用专用，仅由 setup-skills command 主�
 - 删除所有 `<!-- ... -->` 注释段
 - 保留审查维度、问题分级、输出格式等通用内容不动
 
-## Step 5: Generate Triggering Rule
+## Step 6: Generate Triggering Rule
 
 在目标项目创建 `.codebuddy/rules/requesting-code-review.md`：
 
@@ -68,13 +75,6 @@ description: INTERNAL — 手动调用专用，仅由 setup-skills command 主�
 - 用 Step 2 推断的构建命令替换 `{{BUILD_COMMANDS}}` 占位符
 - 保留 `enabled: false`（用户后续主动开启）
 - 删除所有 `<!-- ... -->` 注释段
-
-## Step 6: Idempotency Check
-
-检查目标项目 `.codebuddy/agents/code-reviewer.md` 和 `.codebuddy/rules/requesting-code-review.md` 是否已存在：
-
-- **存在** → 跳过生成，告知用户"已存在，未覆盖，如需重新生成请先手动删除"
-- **不存在** → 按 Step 4-5 生成
 
 ## Step 7: Report to User
 

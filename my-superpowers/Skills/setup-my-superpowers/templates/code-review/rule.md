@@ -51,12 +51,6 @@ enabled: false
 ```bash
 # 获取本次变更的文件列表
 git diff --name-only
-
-# 如需对比特定范围
-# BASE_SHA={{BASE_SHA}}
-# HEAD_SHA={{HEAD_SHA}}
-# git diff --stat $BASE_SHA..$HEAD_SHA
-# git diff $BASE_SHA..$HEAD_SHA
 ```
 
 明确**本次改动的目标**（用户需求摘要）。
